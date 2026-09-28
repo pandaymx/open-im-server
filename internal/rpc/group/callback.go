@@ -341,7 +341,7 @@ func (g *groupServer) webhookBeforeSetGroupInfo(ctx context.Context, before *con
 		if resp.ApplyMemberFriend != nil {
 			req.GroupInfoForSet.ApplyMemberFriend = wrapperspb.Int32(*resp.ApplyMemberFriend)
 		}
-		// resp 中的字符串为零值时表示回调未提供，保留请求原值，避免空串覆盖待更新字段
+		// A zero value means the callback did not provide the field; keep the request value.
 		if resp.GroupID != "" {
 			req.GroupInfoForSet.GroupID = resp.GroupID
 		}
@@ -414,7 +414,7 @@ func (g *groupServer) webhookBeforeSetGroupInfoEx(ctx context.Context, before *c
 			return err
 		}
 
-		// 仅当回调显式提供字段时才覆盖，避免把请求中的增量字段抹成 nil
+		// Only overwrite fields the callback explicitly provided, to avoid wiping the request's partial updates.
 		if resp.GroupID != "" {
 			req.GroupID = resp.GroupID
 		}
